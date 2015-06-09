@@ -202,16 +202,17 @@ smacssGenerator.prototype.scaffoldFolders = function scaffoldFolders() {
                      '└──────────────────────────────────────────────────────────────┘ ')
     );
 
-    this.mkdir(this.appName + '/app');
     if (this.appType === 'typeRestifyApp') {
       this.log( 'Restify App --------' );
-      this.mkdir(this.appName + 'app/controllers');
-      this.mkdir(this.appName + 'app/models');
-      this.mkdir(this.appName + 'app/utils');
+      this.mkdir(this.appName + '/app');
+      this.mkdir(this.appName + '/app/controllers');
+      this.mkdir(this.appName + '/app/models');
+      this.mkdir(this.appName + '/app/utils');
 
     } else {
-
+      this.log( 'Other App --------' );
       // Common Scaffolding for all projets
+      this.mkdir(this.appName + '/app');
       this.mkdir(this.appName + '/app/css');
       this.mkdir(this.appName + '/app/scss');
       this.mkdir(this.appName + '/app/js');
@@ -227,39 +228,38 @@ smacssGenerator.prototype.scaffoldFolders = function scaffoldFolders() {
 
 smacssGenerator.prototype.copyHTMLFiles = function copyHTMLFiles() {
 
-  if (this.appType == 'typeRestifyApp') {
-    return false;
-  }
+  if (this.appType != 'typeRestifyApp') {
 
-  // Replace folder name with appType variable
-  this.copy("common/_404.html", this.appName + "/app/404.html");
-  this.template("_" + this.appType + "/_index.html", this.appName + "/app/index.html", smacssGenerator.context);
+    // Replace folder name with appType variable
+    this.copy("common/_404.html", this.appName + "/app/404.html");
+    this.template("_" + this.appType + "/_index.html", this.appName + "/app/index.html", smacssGenerator.context);
 
-  // Partial File Include
-  if(this.appType === 'typeFullPackWebApp' || this.appType === 'typeAngularApp') {
-      this.template("partials/_header.html", this.appName + "/app/partials/_header.html", smacssGenerator.context);
-      this.template("partials/_footer.html", this.appName + "/app/partials/_footer.html", smacssGenerator.context);
+    // Partial File Include
+    if(this.appType === 'typeFullPackWebApp' || this.appType === 'typeAngularApp') {
+        this.template("partials/_header.html", this.appName + "/app/partials/_header.html", smacssGenerator.context);
+        this.template("partials/_footer.html", this.appName + "/app/partials/_footer.html", smacssGenerator.context);
+    }
+    
   }
 };
 
 smacssGenerator.prototype.copyCSSFiles = function copyCSSFiles() {
 
-  if (this.appType == 'typeRestifyApp') {
-    return false;
+  if (this.appType != 'typeRestifyApp') {
+    
+    this.copy("common/_master.css", this.appName + "/app/css/master.css");
+
+    // SMACSS - SCSS Structure
+    // TODO: Update structure based on ticket #7
+    this.copy("scss/_master.scss", this.appName + "/app/scss/master.scss");
+    this.copy("scss/_base.scss", this.appName + "/app/scss/base.scss");
+    this.copy("scss/_layout.scss", this.appName + "/app/scss/layout.scss");
+    this.copy("scss/_reset.scss", this.appName + "/app/scss/reset.scss");
+    this.copy("scss/_variables.scss", this.appName + "/app/scss/variables.scss");
+    this.copy("scss/_mixins.scss", this.appName + "/app/scss/mixins.scss");
+    this.copy("scss/_module.scss", this.appName + "/app/scss/modules/module.scss");
+    this.copy("scss/_page_landing.scss", this.appName + "/app/scss/pages/page-landing.scss");
   }
-
-  this.copy("common/_master.css", this.appName + "/app/css/master.css");
-
-  // SMACSS - SCSS Structure
-  // TODO: Update structure based on ticket #7
-  this.copy("scss/_master.scss", this.appName + "/app/scss/master.scss");
-  this.copy("scss/_base.scss", this.appName + "/app/scss/base.scss");
-  this.copy("scss/_layout.scss", this.appName + "/app/scss/layout.scss");
-  this.copy("scss/_reset.scss", this.appName + "/app/scss/reset.scss");
-  this.copy("scss/_variables.scss", this.appName + "/app/scss/variables.scss");
-  this.copy("scss/_mixins.scss", this.appName + "/app/scss/mixins.scss");
-  this.copy("scss/_module.scss", this.appName + "/app/scss/modules/module.scss");
-  this.copy("scss/_page_landing.scss", this.appName + "/app/scss/pages/page-landing.scss");
 };
 
 smacssGenerator.prototype.copyJSFiles = function copyJSFiles() {
@@ -281,21 +281,21 @@ smacssGenerator.prototype.copyJSFiles = function copyJSFiles() {
 
 smacssGenerator.prototype.copyDependencyFiles = function copyDependencyFiles() {
 
-  if (this.appType == 'typeRestifyApp') {
+  if (this.appType === 'typeRestifyApp') {
     this.template("_typeRestifyApp/_package.json", this.appName + "/package.json", smacssGenerator.context);
     this.template("_typeRestifyApp/_config.json", this.appName + "/config.json", smacssGenerator.context);
     this.template("_typeRestifyApp/_userSchema.js", this.appName + "/app/models/userSchema.js", smacssGenerator.context);
     this.template("_typeRestifyApp/_userController.js", this.appName + "/app/controllers/userController.js", smacssGenerator.context);
-    return false;
-  }
+  } else {
 
-  if(this.appType === 'typeFullPackWebApp' || this.appType === 'typeAngularApp') {
-    this.template("common/_gulpfile.js", this.appName + "/gulpfile.js", smacssGenerator.context);
+    if(this.appType === 'typeFullPackWebApp' || this.appType === 'typeAngularApp') {
+      this.template("common/_gulpfile.js", this.appName + "/gulpfile.js", smacssGenerator.context);
+    }
+    else {
+      this.template("_typeSimpleWebApp/_gulpfile.js", this.appName + "/gulpfile.js", smacssGenerator.context);
+    }
+    this.template("_" + this.appType + "/_package.json", this.appName + "/package.json", smacssGenerator.context);
   }
-  else {
-    this.template("_typeSimpleWebApp/_gulpfile.js", this.appName + "/gulpfile.js", smacssGenerator.context);
-  }
-  this.template("_" + this.appType + "/_package.json", this.appName + "/package.json", smacssGenerator.context);
 };
 
 smacssGenerator.prototype.copyProjectfiles = function copyProjectfiles() {
@@ -303,15 +303,14 @@ smacssGenerator.prototype.copyProjectfiles = function copyProjectfiles() {
   this.copy("common/_gitignore", this.appName + "/.gitignore");
   this.copy("common/_gitattributes", this.appName + "/.gitattributes");
 
-  if (this.appType == 'typeRestifyApp') {
-    return false;
-  }
+  if (this.appType != 'typeRestifyApp') {
 
-  this.copy("common/_robots.txt", this.appName + "/robots.txt");
-  this.copy("common/_favicon.ico", this.appName + "/app/favicon.ico");
+    this.copy("common/_robots.txt", this.appName + "/robots.txt");
+    this.copy("common/_favicon.ico", this.appName + "/app/favicon.ico");
 
-  if(this.appType !== 'typeSimpleWebApp') {
-    this.template("common/_jshintrc", this.appName + "/.jshintrc", smacssGenerator.context);
+    if(this.appType !== 'typeSimpleWebApp') {
+      this.template("common/_jshintrc", this.appName + "/.jshintrc", smacssGenerator.context);
+    }
   }
 };
 
