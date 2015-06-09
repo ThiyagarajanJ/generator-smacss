@@ -202,16 +202,16 @@ smacssGenerator.prototype.scaffoldFolders = function scaffoldFolders() {
                      '└──────────────────────────────────────────────────────────────┘ ')
     );
 
+    this.mkdir(this.appName + '/app');
     if (this.appType === 'typeRestifyApp') {
       this.log( 'Restify App --------' );
-      this.mkdir(this.appName + '/controllers');
-      this.mkdir(this.appName + '/models');
-      this.mkdir(this.appName + '/utils');
+      this.mkdir(this.appName + 'app/controllers');
+      this.mkdir(this.appName + 'app/models');
+      this.mkdir(this.appName + 'app/utils');
 
     } else {
 
       // Common Scaffolding for all projets
-      this.mkdir(this.appName + '/app');
       this.mkdir(this.appName + '/app/css');
       this.mkdir(this.appName + '/app/scss');
       this.mkdir(this.appName + '/app/js');
@@ -284,8 +284,8 @@ smacssGenerator.prototype.copyDependencyFiles = function copyDependencyFiles() {
   if (this.appType == 'typeRestifyApp') {
     this.template("_typeRestifyApp/_package.json", this.appName + "/package.json", smacssGenerator.context);
     this.template("_typeRestifyApp/_config.json", this.appName + "/config.json", smacssGenerator.context);
-    this.template("_typeRestifyApp/_userSchema.js", this.appName + "/models/userSchema.js", smacssGenerator.context);
-    this.template("_typeRestifyApp/_userController.js", this.appName + "/controllers/userController.js", smacssGenerator.context);
+    this.template("_typeRestifyApp/_userSchema.js", this.appName + "/app/models/userSchema.js", smacssGenerator.context);
+    this.template("_typeRestifyApp/_userController.js", this.appName + "/app/controllers/userController.js", smacssGenerator.context);
     return false;
   }
 

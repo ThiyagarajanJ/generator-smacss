@@ -1,5 +1,5 @@
 module.exports = function(app) {
-	var user = require('./controllers/userController');	
+	var user = require('./app/controllers/userController');	
 	
 	app.get('/', function(req, res, next) {
 		return res.send("WELCOME TO REST API");

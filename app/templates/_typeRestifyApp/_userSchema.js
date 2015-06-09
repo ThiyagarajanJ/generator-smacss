@@ -1,7 +1,7 @@
 // Model for the Student 
 module.exports = (function userSchema () {
 
-	var mongoose = require('../db').mongoose;
+	var mongoose = require('../../db').mongoose;
 
 	var schema = {
 		name: {type: String, required: true},
